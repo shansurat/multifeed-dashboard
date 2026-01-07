@@ -1,36 +1,102 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# REALTIME MULTI-FEED DASHBOARD BY SHANSURAT
+
+## Key Features
+
+- Handles rapid-fire WebSocket events without UI freezing.
+- Uses windowing techniques to render only visible items, supporting 2,000+ rows with constant 60fps performance.
+- Custom WebSocket hook with **Exponential Backoff** reconnection logic and connection status monitoring.
+- Real-time filtering across 7 different data points (Symbol, Price, Description, etc.) using memoized logic.
+- De-duplication of events using `Set` (O(1) complexity) and memory management (capping list size).
+
+---
+
+## Tech Stack & Rationale
+
+### Core Framework
+
+- **Next.js (App Router):** For a modern, server-capable foundation.
+- **TypeScript:** Strict typing for all data interfaces (`MarketEvent`, `ConnectionStatus`) to ensure type safety across the full stack.
+
+### State & Performance
+
+- **Zustand:** Chosen over Redux/Context for its transient update capabilities. It allows high-frequency state changes without triggering unnecessary re-renders in unrelated components.
+- **@tanstack/react-virtual:** Implements "Windowing" (Virtualization). Instead of rendering 2,000 DOM nodes (which crashes browsers), it only renders the ~15 nodes currently on screen.
+- **date-fns:** Lightweight date formatting for timestamps.
+
+### UI & Styling
+
+- **Tailwind CSS:** For rapid, utility-first styling with a specific focus on "Dark Mode" aesthetics (Slate/Emerald/Rose palette).
+- **Lucide React:** Clean, lightweight SVG icons.
+- **clsx / tailwind-merge:** For safe and dynamic class name construction.
+
+---
+
+## Architectural Approach
+
+### 1. The WebSocket "Nervous System" (`useWebSocket.ts`)
+
+Instead of a simple connection, I built a custom hook that manages the entire lifecycle:
+
+- Auto-detects disconnects.
+- If the server fails, it retries in increasing intervals (1s, 2s, 4s...) to prevent network flooding.
+- "Give Up" logic after 5 failed attempts, requiring manual user intervention (The "Reconnect" button).
+
+### 2. The Data Store (`useStore.ts`)
+
+The Zustand store acts as the single source of truth but is optimized for speed:
+
+- Uses a `Set<string>` to track Event IDs. This makes checking for duplicates instant, regardless of list size.
+- Automatically trims the oldest events once the list exceeds 2,000 items to prevent memory leaks during long sessions.
+
+### 3. Rendering Strategy (`page.tsx`)
+
+- **Strict Mode Handling:** Configured to prevent double-invocations of the WebSocket during development.
+- **Memoized Filtering:** The search logic is wrapped in `useMemo`. This ensures complex filtering (checking 7 fields) only runs when the query changes, not on every single tick of the WebSocket.
+
+---
 
 ## Getting Started
 
-First, run the development server:
+This project consists of two parts: the **Frontend (Next.js)** and the **Mock Server (Node.js)**. You need to run both.
+
+### Prerequisites
+
+- Node.js (v18+)
+- npm or yarn
+
+### 1. Installation
+
+Clone the repository and install dependencies:
+
+```bash
+npm install
+```
+
+### 2. Start the Mock Server (The Data Source)
+
+Open a terminal window and run:
+
+```bash
+node mock-server/server.js
+```
+
+You should see: 🚀 Crypto Ticker Server started on port 8080
+
+### 3. Start the Frontend
+
+Open a second terminal window and run:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000/feed in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## How to Test Resilience
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Open the Dashboard: Confirm data is flowing (Green "CONNECTED" badge).
+2. Kill the Server: Go to the Mock Server terminal and press `Ctrl` + `C`.
+3. Observe UI: The badge will turn Amber ("RECONNECTING") and pulse. It will attempt to reconnect 5 times.
+4. Final State: The badge turns Red ("RECONNECT").
+5. Restart Server: Run node mock-server/server.js again.
+6. Recover: Click the "RECONNECT" button in the UI. Data flow resumes immediately.
