@@ -26,7 +26,7 @@ export const useWebSocket = ({ url, onMessage }: WebSocketOptions) => {
     wsRef.current = ws;
 
     ws.onopen = () => {
-      console.log("✅ WS Connected");
+      console.log("WS Connected");
       setStatus("CONNECTED");
 
       reconnectAttempts.current = 0;
@@ -44,16 +44,15 @@ export const useWebSocket = ({ url, onMessage }: WebSocketOptions) => {
         ) {
           onMessage(parsedData);
         } else {
-          console.warn("⚠️ Received malformed data structure:", parsedData);
+          console.warn("Received malformed data structure:", parsedData);
         }
       } catch (err) {
-
         console.error("Failed to parse WS message (Invalid JSON):", event.data);
       }
     };
 
     ws.onclose = () => {
-      console.log("⚠️ WS Disconnected");
+      console.log("WS Disconnected");
       setStatus("DISCONNECTED");
       wsRef.current = null;
       attemptReconnect();
@@ -71,7 +70,7 @@ export const useWebSocket = ({ url, onMessage }: WebSocketOptions) => {
 
     if (reconnectAttempts.current >= MAX_RETRIES) {
       console.log("Max retries reached. Giving up.");
-      setStatus("DISCONNECTED"); 
+      setStatus("DISCONNECTED");
       return;
     }
 
