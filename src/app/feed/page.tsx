@@ -84,7 +84,7 @@ export default function FeedPage() {
           <Activity className="text-emerald-500 w-6 h-6" />
           <h1 className="text-xl font-bold tracking-tight text-white">
             REALTIME MULTI-FEED DASHBOARD{" "}
-            <span className="text-slate-500 font-normal">BY SHANSURAT</span>
+            <span className="text-slate-500 font-normal">by Shan Surat</span>
           </h1>
         </div>
 
@@ -184,7 +184,7 @@ export default function FeedPage() {
         >
           {rowVirtualizer.getVirtualItems().map((virtualRow) => {
             const event = filteredEvents[virtualRow.index];
-            const isBuy = event.side === "buy";
+            const isBuy = event.type === "buy";
 
             return (
               <div
@@ -217,7 +217,7 @@ export default function FeedPage() {
                         : "bg-rose-500 text-rose-300"
                     )}
                   >
-                    {event.side === "buy" ? "Buy" : "Sell"}
+                    {event.type === "buy" ? "Buy" : "Sell"}
                   </span>
                 </div>
 

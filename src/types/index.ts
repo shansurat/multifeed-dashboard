@@ -3,9 +3,8 @@ export type FeedType = "BTC-USD" | "ETH-USD" | "SOL-USD" | "DOGE-USD";
 export interface MarketEvent {
   id: string;
   feed: FeedType;
-  type: "trade" | "sentiment";
+  type: "buy" | "sell";
   description: string;
-  side: "buy" | "sell";
   price: number;
   quantity: number;
   timestamp: number;
