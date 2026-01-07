@@ -80,8 +80,6 @@ Open a terminal window and run:
 node mock-server/server.js
 ```
 
-You should see: 🚀 Crypto Ticker Server started on port 8080
-
 ### 3. Start the Frontend
 
 Open a second terminal window and run:
