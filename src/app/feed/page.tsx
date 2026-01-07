@@ -192,7 +192,7 @@ export default function FeedPage() {
                 data-index={virtualRow.index}
                 ref={rowVirtualizer.measureElement} // <--- ADD THIS (Helps accuracy)
                 className={clsx(
-                  "absolute top-0 left-0 w-full grid grid-cols-12 gap-4 px-6 h-[50px] items-center text-sm border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors",
+                  "absolute top-0 left-0 w-full grid grid-cols-12 gap-4 px-6 h-[12.5] items-center text-sm border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors",
                   isBuy ? "text-emerald-400" : "text-rose-400"
                 )}
                 style={{ transform: `translateY(${virtualRow.start}px)` }}
