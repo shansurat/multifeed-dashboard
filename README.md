@@ -92,9 +92,9 @@ Open http://localhost:3000/feed in your browser.
 
 ## How to Test Resilience
 
-1. Open the Dashboard: Confirm data is flowing (Green "CONNECTED" badge).
-2. Kill the Server: Go to the Mock Server terminal and press `Ctrl` + `C`.
-3. Observe UI: The badge will turn Amber ("RECONNECTING") and pulse. It will attempt to reconnect 5 times.
-4. Final State: The badge turns Red ("RECONNECT").
-5. Restart Server: Run node mock-server/server.js again.
-6. Recover: Click the "RECONNECT" button in the UI. Data flow resumes immediately.
+1. Confirm data is flowing (Green "CONNECTED" badge).
+2. Go to the Mock Server terminal and press `Ctrl` + `C`.
+3. The badge will turn Amber ("RECONNECTING") and pulse. It will attempt to reconnect 5 times.
+4. The badge turns Red ("RECONNECT").
+5. Run node mock-server/server.js again.
+6. Click the "RECONNECT" button in the UI. Data flow resumes immediately.
