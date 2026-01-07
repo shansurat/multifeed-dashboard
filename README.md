@@ -1,4 +1,4 @@
-# REALTIME MULTI-FEED DASHBOARD BY SHANSURAT
+# Realtime Multi-Feed Dashboard BY Shan Surat
 
 ## Key Features
 
